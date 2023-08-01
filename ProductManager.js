@@ -3,25 +3,25 @@ import {promises as fs} from 'fs'
 class ProductManager {
 
     constructor(path) {
-        this.path = './productos.json'
+        this.path = './productos.json' // Archivo json
         this.products = []; //Array vacio de productos
     }
 
-    writeProducts = async (prod) =>{ // Metodo que escribe en el archivo path en formato JSON cualquier tipo de productos
+    writeProducts = async (prod) =>{ // Metodo que escribe productos en el archivo path en formato JSON 
         let products = await fs.writeFile(this.path, JSON.stringify(prod))
         return products
     }
 
-    readProducts = async () => { // Metodo para leer todos los Productos que devuelve un valor u objeto javaScript
-        try{
+    readProducts = async () => { // Metodo para leer todos los Productos
+        try{ // Bloque a iterar
             let read = await fs.readFile(this.path, 'utf-8')
             return await JSON.parse(read);
-        }catch{
-            return []
+        }catch{ // respuesta de una excepcion
+            return [] // Retornamos un array vacio 
         }
     }
 
-    addProducts = async (title, description, price, thumbnail, code, stock) => { // Metodo para añadir
+    addProducts = async (title, description, price, thumbnail, code, stock) => { // Metodo para añadir productos
         !title || !description || !price || !thumbnail || !code || !stock 
         ? console.log('The arguments are not defined')
         : this.products.find(prod => prod.code === code )
@@ -30,7 +30,7 @@ class ProductManager {
         await this.writeProducts(this.products)
     }
 
-    getProducts = async () => {
+    getProducts = async () => { // Metodo para mostrar los productos del archivo json
         let res = await this.readProducts()
         console.log(res)
     }
@@ -42,20 +42,19 @@ class ProductManager {
         return product;
     }
 
-    delateProductsById = async (id) =>{
-        let  res = await this.readProducts()
+    delateProductsById = async (id) =>{ // Metodo para eliminar por el id
+        let  res = await this.readProducts() 
         const prod = res.filter(product => product.id !== id)
         !prod ? console.log('Not found')
         :await this.writeProducts(prod)
     }
 
-    updateProducts = async ({id, ...product}) => {
+    updateProducts = async ({id, ...product}) => { // Metodo para modificar
         let productOld = await this.readProducts();
         await this.delateProductsById(id) 
         let updateProduct = [ {...product , id}, ...productOld]
         await this.writeProducts(updateProduct)
     }
-
 } 
 
 class Product {
@@ -73,11 +72,11 @@ class Product {
 }
 
 const manager = new ProductManager(); // Creamos una instancia de ProductManager
-manager.getProducts(); // Mostramos el array de productos vacio 
+// manager.getProducts(); // Mostramos el array de productos vacio 
 // manager.addProducts('Laptop', 'Laptop MSI ...', 1500, 'url/url', 25, 23); // Añadimos un producto
 // manager.addProducts('Pelota ', 'Championes Puma ...', 120, 'url/u/url',252 , 123); // Añadimos un segundo producto
 // manager.addProducts('Campera ', 'Campera Adidas ...', 234, 'url/ur/url',253 , 113); // Añadimos un tercer producto
-// manager.updateProducts({
+// manager.updateProducts({ // Modificamos el producto
 //     title : 'Auriculares',
 //     description :  'Auriculares JBL ...',
 //     price :  200,
@@ -85,7 +84,7 @@ manager.getProducts(); // Mostramos el array de productos vacio
 //     code :  222,
 //     stock :  23,
 //     id : 1
-// }); // Modificamos el producto
+// }); 
 // manager.getProducts(); // Mostramos los productos añadidos
 // manager.getProductById(2);// Mostramos el producto añadido por su id
 // manager.delateProductsById(1) //Eliminamos un producto por su id
