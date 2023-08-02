@@ -50,9 +50,9 @@ class ProductManager {
     }
 
     updateProducts = async ({id, ...product}) => { // Metodo para modificar
+        await this.delateProductsById(id)
         let productOld = await this.readProducts();
-        await this.delateProductsById(id) 
-        let updateProduct = [ {...product , id}, ...productOld]
+        let updateProduct = [{...product , id}, ...productOld]
         await this.writeProducts(updateProduct)
     }
 } 
